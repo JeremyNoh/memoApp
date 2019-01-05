@@ -1,32 +1,14 @@
 import React, { Component } from "react";
 import "./App.css";
 
-import { Button, Pane, Text, Paragraph, minorScale } from "evergreen-ui";
-
-// retire les valeur n.x  du tableau
-const pullBy = (arr, ...args) => {
-  const length = args.length;
-  let fn = length > 1 ? args[length - 1] : undefined;
-  fn = typeof fn == "function" ? (args.pop(), fn) : undefined;
-  let argState = (Array.isArray(args[0]) ? args[0] : args).map(val => fn(val));
-  let pulled = arr.filter((v, i) => !argState.includes(fn(v)));
-  arr.length = 0;
-  pulled.forEach(v => arr.push(v));
-};
-// var myArray = [{ x: 1 }, { x: 2 }, { x: 3 }, { x: 1 }];
-// example pullBy(myArray, [{ x: 1 }, { x: 3 }], o => o.x); // myArray = [{ x: 2 }]
-
-// retire les valeur n  du tableau
-const pullAtValue = (arr, pullArr) => {
-  let removed = [],
-    pushToRemove = arr.forEach((v, i) =>
-      pullArr.includes(v) ? removed.push(v) : v
-    ),
-    mutateTo = arr.filter((v, i) => !pullArr.includes(v));
-  arr.length = 0;
-  mutateTo.forEach(v => arr.push(v));
-  return removed;
-};
+import {
+  Button,
+  Pane,
+  Text,
+  Paragraph,
+  minorScale,
+  toaster
+} from "evergreen-ui";
 
 // randomise un tableau
 const shake = arr => {
@@ -37,32 +19,57 @@ const shake = arr => {
   return arr;
 };
 
+// retire les valeur n.x  du tableau
+const reducedFilter = (data, keys, fn) =>
+  data.filter(fn).map(el =>
+    keys.reduce((acc, key) => {
+      acc[key] = el[key];
+      return acc;
+    }, {})
+  );
+
 class Game extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      test: "toto",
-      memories: []
+      memories: [],
+      lvl: 0
     };
   }
 
+  createValue = value => {
+    let obj = {
+      find: false,
+      try: false,
+      value
+    };
+    return obj;
+  };
+
   addMemo = () => {
     let { memories } = this.state;
-    let cpt = memories.length + 1;
-    if (memories.includes(cpt)) {
-      cpt++;
-    }
-    memories.push(cpt);
-    memories.push(cpt);
+    let cpt = memories.length / 2 + 1;
+    memories.push(this.createValue(cpt));
+    memories.push(this.createValue(cpt));
     memories = shake(memories);
+    console.log(memories);
     this.setState({ memories });
   };
 
   popMemo = () => {
     let { memories } = this.state;
-    let pulled = pullAtValue(memories, [memories[0]]);
-    memories = shake(memories);
-    this.setState({ memories });
+    let cpt = memories.length / 2;
+
+    if (cpt > 0) {
+      let data = Object.keys(memories[0]);
+      memories = reducedFilter(memories, data, item => item.value !== cpt);
+      memories = shake(memories);
+      this.setState({ memories });
+    } else {
+      toaster.success("ajoute d'abord un level", {
+        duration: 5
+      });
+    }
   };
 
   resize = () => {};
@@ -87,7 +94,7 @@ class Game extends Component {
               alignItems="center"
               flexDirection="column"
             >
-              <Text>{memorie}</Text>
+              <Text>{memorie.value}</Text>
             </Pane>
           ))}
         </Pane>
@@ -104,12 +111,11 @@ class Game extends Component {
   render() {
     return (
       <>
-        <div>Content </div>
         <Pane>
           <Button marginRight={minorScale(3)} onClick={() => this.addMemo()}>
-            Add{" "}
+            Add level
           </Button>
-          <Button onClick={() => this.popMemo()}>Pop</Button>
+          <Button onClick={() => this.popMemo()}>Pop level</Button>
         </Pane>
         {this.canvas()}
       </>
