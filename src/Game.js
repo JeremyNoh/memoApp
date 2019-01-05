@@ -28,18 +28,28 @@ const reducedFilter = (data, keys, fn) =>
     }, {})
   );
 
+const createId = () => {
+  return (
+    "_" +
+    Math.random()
+      .toString(36)
+      .substr(2, 9)
+  );
+};
+
 class Game extends Component {
   constructor(props) {
     super(props);
     this.state = {
       memories: [],
-      lvl: 0
+      lvl: 0,
+      cptTry: 0,
+      saveTry: []
     };
   }
 
   createValue = value => {
     let obj = {
-      find: false,
       try: false,
       value
     };
@@ -72,11 +82,30 @@ class Game extends Component {
     }
   };
 
-  resize = () => {};
+  tryCard = index => {
+    let { memories, cptTry, saveTry } = this.state;
+
+    memories[index].try = true;
+    saveTry.push(index);
+    cptTry++;
+
+    if (cptTry == 2) {
+      if (memories[saveTry[0]].value == memories[saveTry[1]].value) {
+        console.log("dedede");
+      } else {
+        for (let indexTry of saveTry) {
+          memories[indexTry].try = false;
+        }
+      }
+      cptTry = 0;
+      saveTry = [];
+    }
+
+    memories = this.setState({ memories, saveTry, cptTry });
+  };
 
   canvas = () => {
     let { memories } = this.state;
-
     if (memories.length > 0) {
       return (
         <Pane clearfix>
@@ -93,8 +122,9 @@ class Game extends Component {
               justifyContent="center"
               alignItems="center"
               flexDirection="column"
+              onClick={() => this.tryCard(index)}
             >
-              <Text>{memorie.value}</Text>
+              <Text>{memorie.try && memorie.value}</Text>
             </Pane>
           ))}
         </Pane>
