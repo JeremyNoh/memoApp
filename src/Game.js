@@ -46,8 +46,6 @@ class Game extends Component {
       memories.push(this.createValue(i));
     }
     memories = shake(memories);
-    console.log(memories);
-
     for (let memo of memories) {
       memo.try = true;
     }
@@ -60,7 +58,6 @@ class Game extends Component {
       finishLvl: false,
       findPair: []
     });
-
     await sleep(1000);
     for (let memo of memories) {
       memo.try = false;
@@ -81,7 +78,6 @@ class Game extends Component {
         memo.try = false;
       }
       memories = shake(memories);
-      console.log(memories);
       lvlPlayer--;
 
       this.setState({
@@ -102,7 +98,6 @@ class Game extends Component {
 
   tryCard = index => {
     let { memories, cptTry, saveTry, nbFind, finishLvl, findPair } = this.state;
-    console.log(findPair);
     if (cptTry > 1) {
       // Si l'utilisateur appuis trop de fois ...
       return false;
@@ -121,7 +116,6 @@ class Game extends Component {
       if (memories[saveTry[0]].value === memories[saveTry[1]].value) {
         nbFind++;
         findPair.push(memories[saveTry[0]].value);
-        console.log("findPair : ", findPair);
         if (nbFind === memories.length / 2) {
           toaster.success("YOU WIN !!! ", {
             duration: 5
@@ -169,6 +163,11 @@ class Game extends Component {
               flexDirection="column"
               onClick={() => this.tryCard(index)}
               disabled={true}
+              style={{
+                border: this.state.findPair.includes(memorie.value)
+                  ? "1px solid green"
+                  : ""
+              }}
             >
               <Heading color="white">{memorie.try && memorie.value}</Heading>
             </Pane>

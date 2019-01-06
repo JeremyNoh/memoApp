@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 importScripts(
-  "/memoApp/precache-manifest.1d15517b35489c15a5ca3bacd7e6bffd.js"
+  "/memoApp/precache-manifest.24ec03305aaac6c028aa50a318d8d6b2.js"
 );
 
 workbox.clientsClaim();
