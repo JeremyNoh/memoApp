@@ -17,6 +17,8 @@ class Game extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      width: undefined,
+      height: undefined,
       memories: [],
       lvlPlayer: 0,
       cptTry: 0,
@@ -25,6 +27,10 @@ class Game extends Component {
       nbFind: 0,
       finishLvl: true
     };
+  }
+
+  componentDidMount() {
+    this.setState({ width: window.innerWidth, height: window.innerHeight });
   }
 
   createValue = value => {
@@ -147,15 +153,15 @@ class Game extends Component {
     let { memories } = this.state;
     if (memories.length > 0) {
       return (
-        <Pane clearfix>
+        <Pane>
           {memories.map((memorie, index) => (
             <Pane
               key={index}
               elevation={1}
               float="left"
-              width={200}
-              height={120}
-              margin={24}
+              width={this.state.width >= 600 ? 200 : 100}
+              height={this.state.width >= 600 ? 120 : 60}
+              margin={this.state.width >= 600 ? 24 : 12}
               display="flex"
               backgroundColor={memorie.try ? "black" : "white"}
               justifyContent="center"
