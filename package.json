@@ -2,7 +2,7 @@
   "name": "memoapp",
   "version": "0.1.0",
   "private": true,
-  "homepage": "http://myname.github.io/myapp",
+  "homepage": "./build",
   "dependencies": {
     "evergreen-ui": "^4.8.0",
     "react": "^16.7.0",
