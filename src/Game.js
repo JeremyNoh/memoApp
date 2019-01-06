@@ -1,7 +1,15 @@
 import React, { Component } from "react";
 import "./App.css";
 
-import { Button, Pane, Text, minorScale, toaster, Heading } from "evergreen-ui";
+import {
+  Button,
+  Pane,
+  Text,
+  minorScale,
+  toaster,
+  Heading,
+  Pill
+} from "evergreen-ui";
 
 import { shake, reducedFilter, sleep } from "./const";
 
@@ -10,11 +18,11 @@ class Game extends Component {
     super(props);
     this.state = {
       memories: [],
-      lvl: 0,
+      lvlPlayer: 0,
       cptTry: 0,
       saveTry: [],
       nbFind: 0,
-      finishLvl: false
+      finishLvl: true
     };
   }
 
@@ -26,10 +34,11 @@ class Game extends Component {
     return obj;
   };
 
-  addMemo = () => {
-    let { memories } = this.state;
+  addMemo = async () => {
+    let { memories, lvlPlayer } = this.state;
     let cpt = memories.length / 2 + 1;
     memories = [];
+    lvlPlayer++;
 
     for (let i = 1; i < cpt + 1; i++) {
       memories.push(this.createValue(i));
@@ -37,6 +46,11 @@ class Game extends Component {
     }
     memories = shake(memories);
     console.log(memories);
+
+    for (let memo of memories) {
+      memo.try = true;
+    }
+
     this.setState({
       memories,
       cptTry: 0,
@@ -44,7 +58,13 @@ class Game extends Component {
       nbFind: 0,
       finishLvl: false
     });
-    return memories;
+
+    await sleep(1000);
+    for (let memo of memories) {
+      memo.try = false;
+    }
+
+    this.setState({ memories, lvlPlayer });
   };
 
   popMemo = () => {
@@ -150,12 +170,16 @@ class Game extends Component {
   render() {
     return (
       <>
+        <Pill display="inline-flex" margin={8}>
+          lvl : {this.state.lvlPlayer}
+        </Pill>
         <Pane>
           <Button
             appearance={this.state.finishLvl ? "primary" : "default"}
             intent={this.state.finishLvl ? "success" : "none"}
             marginRight={minorScale(3)}
             onClick={() => this.addMemo()}
+            disabled={!this.state.finishLvl}
           >
             Next level
           </Button>
