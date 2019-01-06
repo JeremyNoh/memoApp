@@ -21,6 +21,7 @@ class Game extends Component {
       lvlPlayer: 0,
       cptTry: 0,
       saveTry: [],
+      findPair: [],
       nbFind: 0,
       finishLvl: true
     };
@@ -56,7 +57,8 @@ class Game extends Component {
       cptTry: 0,
       saveTry: [],
       nbFind: 0,
-      finishLvl: false
+      finishLvl: false,
+      findPair: []
     });
 
     await sleep(1000);
@@ -68,7 +70,7 @@ class Game extends Component {
   };
 
   popMemo = () => {
-    let { memories } = this.state;
+    let { memories, lvlPlayer } = this.state;
     let cpt = memories.length / 2;
 
     if (cpt > 0) {
@@ -80,13 +82,16 @@ class Game extends Component {
       }
       memories = shake(memories);
       console.log(memories);
+      lvlPlayer--;
 
       this.setState({
         memories,
         cptTry: 0,
         saveTry: [],
         nbFind: 0,
-        finishLvl: false
+        finishLvl: false,
+        findPair: [],
+        lvlPlayer
       });
     } else {
       toaster.danger("ajoute d'abord un level", {
@@ -96,13 +101,13 @@ class Game extends Component {
   };
 
   tryCard = index => {
-    let { memories, cptTry, saveTry, nbFind, finishLvl } = this.state;
-
+    let { memories, cptTry, saveTry, nbFind, finishLvl, findPair } = this.state;
+    console.log(findPair);
     if (cptTry > 1) {
       // Si l'utilisateur appuis trop de fois ...
       return false;
     }
-    if (saveTry[0] === index) {
+    if (saveTry[0] === index || findPair.includes(memories[index].value)) {
       return false;
     }
 
@@ -115,6 +120,8 @@ class Game extends Component {
     if (cptTry === 2) {
       if (memories[saveTry[0]].value === memories[saveTry[1]].value) {
         nbFind++;
+        findPair.push(memories[saveTry[0]].value);
+        console.log("findPair : ", findPair);
         if (nbFind === memories.length / 2) {
           toaster.success("YOU WIN !!! ", {
             duration: 5
@@ -124,7 +131,7 @@ class Game extends Component {
         cptTry = 0;
         saveTry = [];
 
-        this.setState({ saveTry, cptTry, nbFind, finishLvl });
+        this.setState({ saveTry, cptTry, nbFind, finishLvl, findPair });
       } else {
         this.setState({ memories }, async () => {
           await sleep(1000);

@@ -4,19 +4,19 @@ self.__precacheManifest = [
     "url": "/memoApp/static/js/runtime~main.25755c5f.js"
   },
   {
-    "revision": "f6db653d9aea9da2324e",
-    "url": "/memoApp/static/js/main.f6db653d.chunk.js"
+    "revision": "ab100b7914eac9a739c6",
+    "url": "/memoApp/static/js/main.ab100b79.chunk.js"
   },
   {
     "revision": "a22859910632a35f105d",
     "url": "/memoApp/static/js/1.a2285991.chunk.js"
   },
   {
-    "revision": "f6db653d9aea9da2324e",
+    "revision": "ab100b7914eac9a739c6",
     "url": "/memoApp/static/css/main.c9e38577.chunk.css"
   },
   {
-    "revision": "85fd35021c69609e65e0004080533024",
+    "revision": "960b79541e6a5c43921fa35980ba04a0",
     "url": "/memoApp/index.html"
   }
 ];
