@@ -7,11 +7,11 @@ import {
   Text,
   Paragraph,
   minorScale,
-  toaster
+  toaster,
+  Heading
 } from "evergreen-ui";
 
-import func from "./const";
-const { shake, reducedFilter } = func;
+import { shake, reducedFilter, sleep } from "./const";
 
 class Game extends Component {
   constructor(props) {
@@ -20,7 +20,9 @@ class Game extends Component {
       memories: [],
       lvl: 0,
       cptTry: 0,
-      saveTry: []
+      saveTry: [],
+      nbFind: 0,
+      finishLvl: false
     };
   }
 
@@ -35,11 +37,22 @@ class Game extends Component {
   addMemo = () => {
     let { memories } = this.state;
     let cpt = memories.length / 2 + 1;
-    memories.push(this.createValue(cpt));
-    memories.push(this.createValue(cpt));
+    memories = [];
+
+    for (let i = 1; i < cpt + 1; i++) {
+      memories.push(this.createValue(i));
+      memories.push(this.createValue(i));
+    }
     memories = shake(memories);
     console.log(memories);
-    this.setState({ memories });
+    this.setState({
+      memories,
+      cptTry: 0,
+      saveTry: [],
+      nbFind: 0,
+      finishLvl: false
+    });
+    return memories;
   };
 
   popMemo = () => {
@@ -49,35 +62,62 @@ class Game extends Component {
     if (cpt > 0) {
       let data = Object.keys(memories[0]);
       memories = reducedFilter(memories, data, item => item.value !== cpt);
+
+      for (let memo of memories) {
+        memo.try = false;
+      }
       memories = shake(memories);
-      this.setState({ memories });
+      console.log(memories);
+
+      this.setState({
+        memories,
+        cptTry: 0,
+        saveTry: [],
+        nbFind: 0,
+        finishLvl: false
+      });
     } else {
-      toaster.success("ajoute d'abord un level", {
+      toaster.danger("ajoute d'abord un level", {
         duration: 5
       });
     }
   };
 
   tryCard = index => {
-    let { memories, cptTry, saveTry } = this.state;
-
+    let { memories, cptTry, saveTry, nbFind, finishLvl } = this.state;
     memories[index].try = true;
+    // tourner la card
+
     saveTry.push(index);
     cptTry++;
-
-    if (cptTry == 2) {
-      if (memories[saveTry[0]].value == memories[saveTry[1]].value) {
-        console.log("dedede");
-      } else {
-        for (let indexTry of saveTry) {
-          memories[indexTry].try = false;
+    if (cptTry === 2) {
+      if (memories[saveTry[0]].value === memories[saveTry[1]].value) {
+        nbFind++;
+        if (nbFind === memories.length / 2) {
+          toaster.success("YOU WIN !!! ", {
+            duration: 5
+          });
+          finishLvl = true;
         }
-      }
-      cptTry = 0;
-      saveTry = [];
-    }
+        cptTry = 0;
+        saveTry = [];
 
-    memories = this.setState({ memories, saveTry, cptTry });
+        this.setState({ saveTry, cptTry, nbFind, finishLvl });
+      } else {
+        this.setState({ memories }, async () => {
+          await sleep(2000);
+          for (let indexTry of saveTry) {
+            memories[indexTry].try = false;
+            // retourner la card
+          }
+          cptTry = 0;
+          saveTry = [];
+          this.setState({ memories, saveTry, cptTry });
+        });
+      }
+    } else {
+      this.setState({ memories, saveTry, cptTry });
+    }
   };
 
   canvas = () => {
@@ -94,22 +134,23 @@ class Game extends Component {
               height={120}
               margin={24}
               display="flex"
-              backgroundColor="white"
+              backgroundColor={memorie.try ? "black" : "white"}
               justifyContent="center"
               alignItems="center"
               flexDirection="column"
               onClick={() => this.tryCard(index)}
+              disabled={true}
             >
-              <Text>{memorie.try && memorie.value}</Text>
+              <Heading color="white">{memorie.try && memorie.value}</Heading>
             </Pane>
           ))}
         </Pane>
       );
     } else {
       return (
-        <Paragraph>
-          Vous n'avez pas d'inconnue, Je t'invite à ajouter des inconnues
-        </Paragraph>
+        <Text marginTop={minorScale(3)}>
+          Augmente le level pour debuter la partie
+        </Text>
       );
     }
   };
@@ -118,10 +159,15 @@ class Game extends Component {
     return (
       <>
         <Pane>
-          <Button marginRight={minorScale(3)} onClick={() => this.addMemo()}>
-            Add level
+          <Button
+            appearance={this.state.finishLvl ? "primary" : "default"}
+            intent={this.state.finishLvl ? "success" : "none"}
+            marginRight={minorScale(3)}
+            onClick={() => this.addMemo()}
+          >
+            Next level
           </Button>
-          <Button onClick={() => this.popMemo()}>Pop level</Button>
+          <Button onClick={() => this.popMemo()}>Previous level</Button>
         </Pane>
         {this.canvas()}
       </>

@@ -16,16 +16,8 @@ const reducedFilter = (data, keys, fn) =>
     }, {})
   );
 
-const createId = () => {
-  return (
-    "_" +
-    Math.random()
-      .toString(36)
-      .substr(2, 9)
-  );
+const sleep = milliseconds => {
+  return new Promise(resolve => setTimeout(resolve, milliseconds));
 };
 
-export default {
-  shake,
-  reducedFilter
-};
+export { shake, reducedFilter, sleep };
