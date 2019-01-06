@@ -97,7 +97,7 @@ class Game extends Component {
         this.setState({ saveTry, cptTry, nbFind, finishLvl });
       } else {
         this.setState({ memories }, async () => {
-          await sleep(2000);
+          await sleep(1000);
           for (let indexTry of saveTry) {
             memories[indexTry].try = false;
             // retourner la card
