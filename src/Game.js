@@ -97,11 +97,21 @@ class Game extends Component {
 
   tryCard = index => {
     let { memories, cptTry, saveTry, nbFind, finishLvl } = this.state;
+
+    if (cptTry > 1) {
+      // Si l'utilisateur appuis trop de fois ...
+      return false;
+    }
+    if (saveTry[0] === index) {
+      return false;
+    }
+
     memories[index].try = true;
     // tourner la card
-
     saveTry.push(index);
     cptTry++;
+
+    this.setState({ saveTry, cptTry });
     if (cptTry === 2) {
       if (memories[saveTry[0]].value === memories[saveTry[1]].value) {
         nbFind++;

@@ -1,13 +1,13 @@
 {
   "main.css": "/memoApp/static/css/main.c9e38577.chunk.css",
-  "main.js": "/memoApp/static/js/main.92127256.chunk.js",
-  "main.js.map": "/memoApp/static/js/main.92127256.chunk.js.map",
-  "static/js/1.39250708.chunk.js": "/memoApp/static/js/1.39250708.chunk.js",
-  "static/js/1.39250708.chunk.js.map": "/memoApp/static/js/1.39250708.chunk.js.map",
+  "main.js": "/memoApp/static/js/main.f6db653d.chunk.js",
+  "main.js.map": "/memoApp/static/js/main.f6db653d.chunk.js.map",
+  "static/js/1.a2285991.chunk.js": "/memoApp/static/js/1.a2285991.chunk.js",
+  "static/js/1.a2285991.chunk.js.map": "/memoApp/static/js/1.a2285991.chunk.js.map",
   "runtime~main.js": "/memoApp/static/js/runtime~main.25755c5f.js",
   "runtime~main.js.map": "/memoApp/static/js/runtime~main.25755c5f.js.map",
   "static/css/main.c9e38577.chunk.css.map": "/memoApp/static/css/main.c9e38577.chunk.css.map",
   "index.html": "/memoApp/index.html",
-  "precache-manifest.32ac199884e01e3afb23970a4af2d356.js": "/memoApp/precache-manifest.32ac199884e01e3afb23970a4af2d356.js",
+  "precache-manifest.194d18835b4101567224a84946b46988.js": "/memoApp/precache-manifest.194d18835b4101567224a84946b46988.js",
   "service-worker.js": "/memoApp/service-worker.js"
 }
