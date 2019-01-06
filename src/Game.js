@@ -1,15 +1,7 @@
 import React, { Component } from "react";
 import "./App.css";
 
-import {
-  Button,
-  Pane,
-  Text,
-  Paragraph,
-  minorScale,
-  toaster,
-  Heading
-} from "evergreen-ui";
+import { Button, Pane, Text, minorScale, toaster, Heading } from "evergreen-ui";
 
 import { shake, reducedFilter, sleep } from "./const";
 
