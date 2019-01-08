@@ -205,8 +205,10 @@ class Game extends Component {
     if (easterEggsFound === 0) {
       easterEggsFound++;
       this.setState({ easterEggsFound });
-      toaster.notify("Tu as trouvé un Easter Eggs Félicitation !!! ", {
-        duration: 5
+      toaster.notify("Tu as trouvé un Easter Eggs Félicitation !!!", {
+        duration: 7,
+        description:
+          "Il y en a pleins d'autres bien cachés ! mais n'en abuse pas ... "
       });
     }
     nbFaute--;
@@ -234,7 +236,6 @@ class Game extends Component {
   };
 
   render() {
-    console.log(this.state.nbFaute);
     return (
       <>
         <Pill display="inline-flex" margin={8}>
