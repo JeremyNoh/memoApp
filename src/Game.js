@@ -26,7 +26,8 @@ class Game extends Component {
       findPair: [],
       nbFind: 0,
       finishLvl: true,
-      nbFaute: 0
+      nbFaute: 0,
+      easterEggsFound: 0
     };
   }
 
@@ -199,6 +200,19 @@ class Game extends Component {
     }
   };
 
+  lessOneFault = () => {
+    let { nbFaute, easterEggsFound } = this.state;
+    if (easterEggsFound === 0) {
+      easterEggsFound++;
+      this.setState({ easterEggsFound });
+      toaster.notify("Tu as trouvé un Easter Eggs Félicitation !!! ", {
+        duration: 5
+      });
+    }
+    nbFaute--;
+    this.setState({ nbFaute });
+  };
+
   isFaute = () => {
     if (this.state.nbFaute === 0) {
       return (
@@ -208,7 +222,12 @@ class Game extends Component {
       );
     }
     return (
-      <Pill display="inline-flex" color="red" margin={8}>
+      <Pill
+        display="inline-flex"
+        color="red"
+        margin={8}
+        onDoubleClick={() => this.lessOneFault()}
+      >
         Faute : {this.state.nbFaute}
       </Pill>
     );
