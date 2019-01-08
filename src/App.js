@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import "./App.css";
 import Game from "./Game";
 import { Icon, CornerDialog, Text } from "evergreen-ui";
+// import * as fs from "fs";
 
 class App extends Component {
   constructor(props) {
@@ -11,8 +12,9 @@ class App extends Component {
       isShown: false
     };
   }
+  componentDidMount() {}
+
   getIngo = () => {
-    console.log("dede");
     this.setState({ isShown: true });
   };
   render() {

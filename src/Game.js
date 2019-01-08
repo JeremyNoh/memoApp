@@ -91,7 +91,7 @@ class Game extends Component {
         cptTry: 0,
         saveTry: [],
         nbFind: 0,
-        finishLvl: false,
+        finishLvl: true,
         findPair: [],
         lvlPlayer
       });
