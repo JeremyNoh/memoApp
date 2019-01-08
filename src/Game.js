@@ -25,7 +25,8 @@ class Game extends Component {
       saveTry: [],
       findPair: [],
       nbFind: 0,
-      finishLvl: true
+      finishLvl: true,
+      nbFaute: 0
     };
   }
 
@@ -103,7 +104,15 @@ class Game extends Component {
   };
 
   tryCard = index => {
-    let { memories, cptTry, saveTry, nbFind, finishLvl, findPair } = this.state;
+    let {
+      memories,
+      cptTry,
+      saveTry,
+      nbFind,
+      finishLvl,
+      findPair,
+      nbFaute
+    } = this.state;
     if (cptTry > 1) {
       // Si l'utilisateur appuis trop de fois ...
       return false;
@@ -139,9 +148,10 @@ class Game extends Component {
             memories[indexTry].try = false;
             // retourner la card
           }
+          nbFaute++;
           cptTry = 0;
           saveTry = [];
-          this.setState({ memories, saveTry, cptTry });
+          this.setState({ memories, saveTry, cptTry, nbFaute });
         });
       }
     } else {
@@ -189,7 +199,23 @@ class Game extends Component {
     }
   };
 
+  isFaute = () => {
+    if (this.state.nbFaute === 0) {
+      return (
+        <Pill display="inline-flex" color="green" margin={8}>
+          Perfect
+        </Pill>
+      );
+    }
+    return (
+      <Pill display="inline-flex" color="red" margin={8}>
+        Faute : {this.state.nbFaute}
+      </Pill>
+    );
+  };
+
   render() {
+    console.log(this.state.nbFaute);
     return (
       <>
         <Pill display="inline-flex" margin={8}>
@@ -206,6 +232,7 @@ class Game extends Component {
             Next level
           </Button>
           <Button onClick={() => this.popMemo()}>Previous level</Button>
+          {this.state.lvlPlayer > 0 && this.isFaute()}
         </Pane>
         {this.canvas()}
       </>
