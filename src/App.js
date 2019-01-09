@@ -3,9 +3,6 @@ import React, { Component } from "react";
 import "./App.css";
 import Game from "./Game";
 import { Icon, CornerDialog, Text } from "evergreen-ui";
-import { library } from "@fortawesome/fontawesome-svg-core";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faIgloo } from "@fortawesome/free-solid-svg-icons";
 
 class App extends Component {
   constructor(props) {
@@ -20,12 +17,6 @@ class App extends Component {
     this.setState({ isShown: true });
   };
 
-  // <link
-  //   rel="stylesheet"
-  //   href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
-  //   integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
-  //   crossOrigin="anonymous"
-  // />
   render() {
     return (
       <div className="Game">

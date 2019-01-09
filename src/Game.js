@@ -11,7 +11,7 @@ import {
   Pill
 } from "evergreen-ui";
 
-import { shake, reducedFilter, sleep } from "./const";
+import { shake, reducedFilter, sleep, tabEmoji } from "./const";
 
 class Game extends Component {
   constructor(props) {
@@ -27,12 +27,18 @@ class Game extends Component {
       nbFind: 0,
       finishLvl: true,
       nbFaute: 0,
-      easterEggsFound: 0
+      easterEggsFound: 0,
+      tabEmojis: []
     };
   }
 
   componentDidMount() {
-    this.setState({ width: window.innerWidth, height: window.innerHeight });
+    let tabEmojis = tabEmoji;
+    this.setState({
+      width: window.innerWidth,
+      height: window.innerHeight,
+      tabEmojis
+    });
   }
 
   createValue = value => {
@@ -44,7 +50,7 @@ class Game extends Component {
   };
 
   addMemo = async () => {
-    let { memories, lvlPlayer } = this.state;
+    let { memories, lvlPlayer, tabEmojis } = this.state;
     let cpt = memories.length / 2 + 1;
     memories = [];
     lvlPlayer++;
@@ -54,6 +60,7 @@ class Game extends Component {
       memories.push(this.createValue(i));
     }
     memories = shake(memories);
+    tabEmojis = shake(tabEmojis);
     for (let memo of memories) {
       memo.try = true;
     }
@@ -64,9 +71,10 @@ class Game extends Component {
       saveTry: [],
       nbFind: 0,
       finishLvl: false,
-      findPair: []
+      findPair: [],
+      tabEmojis
     });
-    await sleep(1000);
+    await sleep(1000 + 200 * lvlPlayer);
     for (let memo of memories) {
       memo.try = false;
     }
@@ -75,7 +83,7 @@ class Game extends Component {
   };
 
   popMemo = () => {
-    let { memories, lvlPlayer } = this.state;
+    let { memories, lvlPlayer, tabEmojis } = this.state;
     let cpt = memories.length / 2;
 
     if (cpt > 0) {
@@ -86,10 +94,12 @@ class Game extends Component {
         memo.try = false;
       }
       memories = shake(memories);
+      tabEmojis = shake(tabEmojis);
       lvlPlayer--;
 
       this.setState({
         memories,
+        tabEmojis,
         cptTry: 0,
         saveTry: [],
         nbFind: 0,
@@ -161,7 +171,7 @@ class Game extends Component {
   };
 
   canvas = () => {
-    let { memories } = this.state;
+    let { memories, tabEmojis } = this.state;
     if (memories.length > 0) {
       return (
         <Pane>
@@ -186,7 +196,9 @@ class Game extends Component {
                   : ""
               }}
             >
-              <Heading color="white">{memorie.try && memorie.value}</Heading>
+              <Heading color="white" size={800}>
+                {memorie.try && tabEmojis[memorie.value]}
+              </Heading>
             </Pane>
           ))}
         </Pane>
@@ -199,7 +211,6 @@ class Game extends Component {
       );
     }
   };
-
   lessOneFault = () => {
     let { nbFaute, easterEggsFound } = this.state;
     if (easterEggsFound === 0) {
