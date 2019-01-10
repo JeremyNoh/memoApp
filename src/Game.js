@@ -11,7 +11,7 @@ import {
   Pill
 } from "evergreen-ui";
 
-import { shake, reducedFilter, sleep, tabEmoji } from "./const";
+import { shake, reducedFilter, sleep, tabEmoji, createValue } from "./const";
 
 class Game extends Component {
   constructor(props) {
@@ -41,13 +41,6 @@ class Game extends Component {
     });
   }
 
-  createValue = value => {
-    let obj = {
-      try: false,
-      value
-    };
-    return obj;
-  };
 
   addMemo = async () => {
     let { memories, lvlPlayer, tabEmojis } = this.state;
@@ -56,8 +49,8 @@ class Game extends Component {
     lvlPlayer++;
 
     for (let i = 1; i < cpt + 1; i++) {
-      memories.push(this.createValue(i));
-      memories.push(this.createValue(i));
+      memories.push(createValue(i));
+      memories.push(createValue(i));
     }
     memories = shake(memories);
     tabEmojis = shake(tabEmojis);
@@ -82,7 +75,7 @@ class Game extends Component {
     this.setState({ memories, lvlPlayer });
   };
 
-  popMemo = () => {
+  popMemo = async() => {
     let { memories, lvlPlayer, tabEmojis } = this.state;
     let cpt = memories.length / 2;
 
@@ -90,23 +83,30 @@ class Game extends Component {
       let data = Object.keys(memories[0]);
       memories = reducedFilter(memories, data, item => item.value !== cpt);
 
-      for (let memo of memories) {
-        memo.try = false;
-      }
       memories = shake(memories);
       tabEmojis = shake(tabEmojis);
       lvlPlayer--;
 
+
+      for (let memo of memories) {
+        memo.try = true;
+      }
+
       this.setState({
         memories,
-        tabEmojis,
         cptTry: 0,
         saveTry: [],
         nbFind: 0,
         finishLvl: true,
         findPair: [],
-        lvlPlayer
+        tabEmojis
       });
+      await sleep(1000 + 200 * lvlPlayer);
+      for (let memo of memories) {
+        memo.try = false;
+      }
+      this.setState({ memories, lvlPlayer });
+
     } else {
       toaster.danger("ajoute d'abord un level", {
         duration: 5

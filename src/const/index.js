@@ -20,6 +20,16 @@ const sleep = milliseconds => {
   return new Promise(resolve => setTimeout(resolve, milliseconds));
 };
 
+// create the Value
+const createValue = value => {
+  let obj = {
+    try: false,
+    value
+  };
+  return obj;
+};
+
+
 const tabEmojiString = [
   "fas fa-angry",
   "fas fa-dizzy",
@@ -118,4 +128,4 @@ const tabEmoji = [
   "💘",
   "💜"
 ];
-export { shake, reducedFilter, sleep, tabEmoji };
+export { shake, reducedFilter, sleep, tabEmoji , createValue};
