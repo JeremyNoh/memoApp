@@ -28,7 +28,8 @@ class Game extends Component {
       finishLvl: true,
       nbFaute: 0,
       easterEggsFound: 0,
-      tabEmojis: []
+      tabEmojis: [],
+      faultForThisLvl : 0
     };
   }
 
@@ -43,10 +44,11 @@ class Game extends Component {
 
 
   addMemo = async () => {
-    let { memories, lvlPlayer, tabEmojis } = this.state;
+    let { memories, lvlPlayer, tabEmojis, faultForThisLvl } = this.state;
     let cpt = memories.length / 2 + 1;
     memories = [];
     lvlPlayer++;
+    faultForThisLvl = 0
 
     for (let i = 1; i < cpt + 1; i++) {
       memories.push(createValue(i));
@@ -65,7 +67,8 @@ class Game extends Component {
       nbFind: 0,
       finishLvl: false,
       findPair: [],
-      tabEmojis
+      tabEmojis,
+      faultForThisLvl
     });
     await sleep(1000 + 200 * lvlPlayer);
     for (let memo of memories) {
@@ -76,7 +79,7 @@ class Game extends Component {
   };
 
   popMemo = async() => {
-    let { memories, lvlPlayer, tabEmojis } = this.state;
+    let { memories, lvlPlayer, tabEmojis, faultForThisLvl } = this.state;
     let cpt = memories.length / 2;
 
     if (cpt > 0) {
@@ -86,7 +89,7 @@ class Game extends Component {
       memories = shake(memories);
       tabEmojis = shake(tabEmojis);
       lvlPlayer--;
-
+faultForThisLvl = 0
 
       for (let memo of memories) {
         memo.try = true;
@@ -99,7 +102,8 @@ class Game extends Component {
         nbFind: 0,
         finishLvl: true,
         findPair: [],
-        tabEmojis
+        tabEmojis,
+        faultForThisLvl
       });
       await sleep(1000 + 200 * lvlPlayer);
       for (let memo of memories) {
@@ -115,8 +119,10 @@ class Game extends Component {
   };
 
   resetMemo = async () => {
-    let { memories , lvlPlayer} = this.state;
+    let { memories , lvlPlayer,nbFaute,  faultForThisLvl} = this.state;
       memories = shake(memories);
+      nbFaute = nbFaute - faultForThisLvl
+      faultForThisLvl = 0
 
       for (let memo of memories) {
         memo.try = true;
@@ -127,12 +133,13 @@ class Game extends Component {
         nbFind: 0,
         memories,
         findPair: [],
+        finishLvl : false
       });
       await sleep(1000 + 200 * lvlPlayer);
       for (let memo of memories) {
         memo.try = false;
       }
-      this.setState({ memories, lvlPlayer });
+      this.setState({ memories, lvlPlayer, nbFaute, faultForThisLvl });
 
   }
 
@@ -144,7 +151,8 @@ class Game extends Component {
       nbFind,
       finishLvl,
       findPair,
-      nbFaute
+      nbFaute,
+      faultForThisLvl
     } = this.state;
     if (cptTry > 1 || memories[index].try === true) {
       // Si l'utilisateur appuis trop de fois ... ou appuies une card deja ouverte
@@ -181,10 +189,11 @@ class Game extends Component {
             memories[indexTry].try = false;
             // retourner la card
           }
+          faultForThisLvl ++
           nbFaute++;
           cptTry = 0;
           saveTry = [];
-          this.setState({ memories, saveTry, cptTry, nbFaute });
+          this.setState({ memories, saveTry, cptTry, nbFaute, faultForThisLvl});
         });
       }
     } else {
@@ -288,7 +297,7 @@ class Game extends Component {
             Next level
           </Button>
           <Button marginRight={minorScale(3)} onClick={() => this.popMemo()}>Previous level</Button>
-          {this.state.lvlPlayer > 0 && <Button onClick={() => this.resetMemo()}>Reset</Button>}
+          {this.state.lvlPlayer > 0 && <Button onClick={() => this.resetMemo()}   appearance="primary" intent="danger">Reset</Button>}
         </Pane>
         {this.canvas()}
       </>
