@@ -114,6 +114,28 @@ class Game extends Component {
     }
   };
 
+  resetMemo = async () => {
+    let { memories , lvlPlayer} = this.state;
+      memories = shake(memories);
+
+      for (let memo of memories) {
+        memo.try = true;
+      }
+      this.setState({
+        cptTry: 0,
+        saveTry: [],
+        nbFind: 0,
+        memories,
+        findPair: [],
+      });
+      await sleep(1000 + 200 * lvlPlayer);
+      for (let memo of memories) {
+        memo.try = false;
+      }
+      this.setState({ memories, lvlPlayer });
+
+  }
+
   tryCard = index => {
     let {
       memories,
@@ -265,7 +287,8 @@ class Game extends Component {
           >
             Next level
           </Button>
-          <Button onClick={() => this.popMemo()}>Previous level</Button>
+          <Button marginRight={minorScale(3)} onClick={() => this.popMemo()}>Previous level</Button>
+          {this.state.lvlPlayer > 0 && <Button onClick={() => this.resetMemo()}>Reset</Button>}
         </Pane>
         {this.canvas()}
       </>
