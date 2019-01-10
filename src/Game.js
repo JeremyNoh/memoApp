@@ -124,8 +124,8 @@ class Game extends Component {
       findPair,
       nbFaute
     } = this.state;
-    if (cptTry > 1) {
-      // Si l'utilisateur appuis trop de fois ...
+    if (cptTry > 1 || memories[index].try === true) {
+      // Si l'utilisateur appuis trop de fois ... ou appuies une card deja ouverte
       return false;
     }
     if (saveTry[0] === index || findPair.includes(memories[index].value)) {
@@ -249,9 +249,12 @@ class Game extends Component {
   render() {
     return (
       <>
-        <Pill display="inline-flex" margin={8}>
-          lvl : {this.state.lvlPlayer}
-        </Pill>
+        <Pane>
+          <Pill display="inline-flex" margin={8}>
+            lvl : {this.state.lvlPlayer}
+          </Pill>
+          {this.state.lvlPlayer > 0 && this.isFaute()}
+        </Pane>
         <Pane>
           <Button
             appearance={this.state.finishLvl ? "primary" : "default"}
@@ -263,7 +266,6 @@ class Game extends Component {
             Next level
           </Button>
           <Button onClick={() => this.popMemo()}>Previous level</Button>
-          {this.state.lvlPlayer > 0 && this.isFaute()}
         </Pane>
         {this.canvas()}
       </>
