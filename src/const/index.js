@@ -29,6 +29,31 @@ const createValue = value => {
   return obj;
 };
 
+const createValuePlayer = () => {
+  let player = {
+    saveTry: [],
+    findPair: [],
+    nbFind: 0,
+    finishLvl: true,
+    nbFaute: 0,
+    easterEggsFound: 0,
+    faultForThisLvl : 0,
+    lvlPlayer: 0,
+    cptTry: 0
+  }
+  return player;
+}
+
+
+const resetValuePlayer = (player) =>{
+  player.cptTry = 0
+  player.saveTry = []
+  player.nbFind = 0
+  player.findPair = []
+  player.faultForThisLvl = 0
+  return player;
+}
+
 
 const tabEmojiString = [
   "fas fa-angry",
@@ -128,4 +153,4 @@ const tabEmoji = [
   "💘",
   "💜"
 ];
-export { shake, reducedFilter, sleep, tabEmoji , createValue};
+export { shake, reducedFilter, sleep, tabEmoji , createValue, createValuePlayer, resetValuePlayer};

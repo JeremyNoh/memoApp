@@ -13,7 +13,7 @@ class App extends Component {
   }
   componentDidMount() {}
 
-  getIngo = () => {
+  getInfo = () => {
     this.setState({ isShown: true });
   };
 
@@ -21,12 +21,12 @@ class App extends Component {
     return (
       <div className="Game">
         <p>
-          Bienvenu sur MemoApp
+          Bienvenue sur MemoApp
           <Icon
             icon="info-sign"
             color="info"
             marginLeft={16}
-            onClick={() => this.getIngo()}
+            onClick={() => this.getInfo()}
           />
         </p>
         <CornerDialog
@@ -55,16 +55,3 @@ class App extends Component {
 }
 
 export default App;
-
-// <img src={logo} className="App-logo" alt="logo" />
-// <p>
-//   Edit <code>src/App.js</code> and save to reload.
-// </p>
-// <a
-//   className="App-link"
-//   href="https://reactjs.org"
-//   target="_blank"
-//   rel="noopener noreferrer"
-// >
-//   Learn React
-// </a>
