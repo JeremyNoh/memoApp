@@ -8,10 +8,19 @@ import {
   minorScale,
   toaster,
   Heading,
-  Pill
+  Pill,
+  Badge
 } from "evergreen-ui";
 
-import { shake, reducedFilter, sleep, tabEmoji, createValue, createValuePlayer, resetValuePlayer } from "./const";
+import {
+  shake,
+  reducedFilter,
+  sleep,
+  tabEmoji,
+  createValue,
+  createValuePlayer,
+  resetValuePlayer
+} from "./const";
 
 class Game extends Component {
   constructor(props) {
@@ -21,13 +30,13 @@ class Game extends Component {
       height: undefined,
       tabEmojis: [],
       memories: [],
-      player : {} ,
+      player: {}
     };
   }
 
   componentDidMount() {
     let tabEmojis = tabEmoji;
-    let player = createValuePlayer()
+    let player = createValuePlayer();
     this.setState({
       width: window.innerWidth,
       height: window.innerHeight,
@@ -36,12 +45,10 @@ class Game extends Component {
     });
   }
 
-
   addMemo = async () => {
-    let { memories, tabEmojis, player} = this.state;
+    let { memories, tabEmojis, player } = this.state;
     let cpt = memories.length / 2 + 1;
     memories = [];
-
 
     for (let i = 1; i < cpt + 1; i++) {
       memories.push(createValue(i));
@@ -53,13 +60,13 @@ class Game extends Component {
       memo.try = true;
     }
 
-    player = resetValuePlayer(player)
-    player.finishLvl = false
+    player = resetValuePlayer(player);
+    player.finishLvl = false;
 
     this.setState({
       memories,
       tabEmojis,
-      player,
+      player
     });
     player.lvlPlayer++;
 
@@ -71,8 +78,8 @@ class Game extends Component {
     this.setState({ memories, player });
   };
 
-  popMemo = async() => {
-    let { memories, tabEmojis, player  } = this.state;
+  popMemo = async () => {
+    let { memories, tabEmojis, player } = this.state;
     let cpt = memories.length / 2;
 
     if (cpt > 0) {
@@ -82,18 +89,17 @@ class Game extends Component {
       memories = shake(memories);
       tabEmojis = shake(tabEmojis);
 
-
       for (let memo of memories) {
         memo.try = true;
       }
 
-      player = resetValuePlayer(player)
-      player.finishLvl = true
+      player = resetValuePlayer(player);
+      player.finishLvl = true;
 
       this.setState({
         memories,
         tabEmojis,
-        player,
+        player
       });
 
       player.lvlPlayer--;
@@ -102,7 +108,6 @@ class Game extends Component {
         memo.try = false;
       }
       this.setState({ memories, player });
-
     } else {
       toaster.danger("ajoute d'abord un level", {
         duration: 5
@@ -112,39 +117,38 @@ class Game extends Component {
 
   resetMemo = async () => {
     let { memories, player } = this.state;
-      memories = shake(memories);
+    memories = shake(memories);
 
-      for (let memo of memories) {
-        memo.try = true;
-      }
+    for (let memo of memories) {
+      memo.try = true;
+    }
 
-      player = resetValuePlayer(player)
-      player.finishLvl = false
+    player.nbFaute -= player.faultForThisLvl;
+    player = resetValuePlayer(player);
+    player.finishLvl = false;
 
-      this.setState({
-        memories,
-        player
-      });
-
-      player.nbFaute -= player.faultForThisLvl
-      await sleep(1000 + 200 * player.lvlPlayer);
-      for (let memo of memories) {
-        memo.try = false;
-      }
-      this.setState({ memories,player });
-
-  }
-
-  tryCard = index => {
-    let {
+    this.setState({
       memories,
       player
-    } = this.state;
+    });
+
+    await sleep(1000 + 200 * player.lvlPlayer);
+    for (let memo of memories) {
+      memo.try = false;
+    }
+    this.setState({ memories, player });
+  };
+
+  tryCard = index => {
+    let { memories, player } = this.state;
     if (player.cptTry > 1 || memories[index].try === true) {
       // Si l'utilisateur appuis trop de fois ... ou appuies une card deja ouverte
       return false;
     }
-    if (player.saveTry[0] === index || player.findPair.includes(memories[index].value)) {
+    if (
+      player.saveTry[0] === index ||
+      player.findPair.includes(memories[index].value)
+    ) {
       return false;
     }
 
@@ -155,7 +159,9 @@ class Game extends Component {
 
     this.setState({ player });
     if (player.cptTry === 2) {
-      if (memories[player.saveTry[0]].value === memories[player.saveTry[1]].value) {
+      if (
+        memories[player.saveTry[0]].value === memories[player.saveTry[1]].value
+      ) {
         player.nbFind++;
         player.findPair.push(memories[player.saveTry[0]].value);
         if (player.nbFind === memories.length / 2) {
@@ -163,6 +169,10 @@ class Game extends Component {
             duration: 5
           });
           player.finishLvl = true;
+          //  ADD bonus if perfect
+          if (player.faultForThisLvl === 0) {
+            player.bonusSee++;
+          }
         }
         player.cptTry = 0;
         player.saveTry = [];
@@ -175,7 +185,7 @@ class Game extends Component {
             memories[indexTry].try = false;
             // retourner la card
           }
-          player.faultForThisLvl ++
+          player.faultForThisLvl++;
           player.nbFaute++;
           player.cptTry = 0;
           player.saveTry = [];
@@ -229,7 +239,7 @@ class Game extends Component {
     }
   };
   lessOneFault = () => {
-    let { player} = this.state;
+    let { player } = this.state;
     if (player.easterEggsFound === 0) {
       player.easterEggsFound++;
       this.setState({ player });
@@ -244,7 +254,7 @@ class Game extends Component {
   };
 
   isFaute = () => {
-    let { player } = this.state
+    let { player } = this.state;
     if (player.nbFaute === 0) {
       return (
         <Pill display="inline-flex" color="green" margin={8}>
@@ -264,14 +274,54 @@ class Game extends Component {
     );
   };
 
+  isBonus = () => {
+    let { player } = this.state;
+    if (player.lvlPlayer > 0 && player.bonusSee > 0) {
+      return (
+        <Badge
+          display="inline-flex"
+          color="teal"
+          margin={8}
+          onClick={() => this.tryBonus()}
+        >
+          Bonus : {player.bonusSee}
+        </Badge>
+      );
+    }
+  };
+
+  tryBonus = async () => {
+    let { memories, player } = this.state;
+    for (let memo of memories) {
+      memo.try = true;
+    }
+    this.setState({ memories });
+    await sleep(1000 + 200 * player.lvlPlayer);
+    for (let memo of memories) {
+      if (player.findPair.includes(memo.value)) {
+        memo.try = true;
+      } else {
+        memo.try = false;
+      }
+    }
+    if (player.saveTry.length > 0) {
+      for (let saveTryIndex of player.saveTry) {
+        memories[saveTryIndex].try = true;
+      }
+    }
+    player.bonusSee -= 1;
+    this.setState({ memories, player });
+  };
+
   render() {
-    let { player } = this.state
+    let { player } = this.state;
     return (
       <>
         <Pane>
           <Pill display="inline-flex" margin={8}>
             lvl : {player.lvlPlayer}
           </Pill>
+          {this.isBonus()}
           {player.lvlPlayer > 0 && this.isFaute()}
         </Pane>
         <Pane>
@@ -284,8 +334,18 @@ class Game extends Component {
           >
             Next level
           </Button>
-          <Button marginRight={minorScale(3)} onClick={() => this.popMemo()}>Previous level</Button>
-          {player.lvlPlayer > 0 && <Button onClick={() => this.resetMemo()}   appearance="primary" intent="danger">Reset</Button>}
+          <Button marginRight={minorScale(3)} onClick={() => this.popMemo()}>
+            Previous level
+          </Button>
+          {player.lvlPlayer > 0 && (
+            <Button
+              onClick={() => this.resetMemo()}
+              appearance="primary"
+              intent="danger"
+            >
+              Reset
+            </Button>
+          )}
         </Pane>
         {this.canvas()}
       </>

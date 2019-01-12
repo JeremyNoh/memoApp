@@ -37,23 +37,22 @@ const createValuePlayer = () => {
     finishLvl: true,
     nbFaute: 0,
     easterEggsFound: 0,
-    faultForThisLvl : 0,
+    faultForThisLvl: 0,
     lvlPlayer: 0,
-    cptTry: 0
-  }
+    cptTry: 0,
+    bonusSee: 0
+  };
   return player;
-}
+};
 
-
-const resetValuePlayer = (player) =>{
-  player.cptTry = 0
-  player.saveTry = []
-  player.nbFind = 0
-  player.findPair = []
-  player.faultForThisLvl = 0
+const resetValuePlayer = player => {
+  player.cptTry = 0;
+  player.saveTry = [];
+  player.nbFind = 0;
+  player.findPair = [];
+  player.faultForThisLvl = 0;
   return player;
-}
-
+};
 
 const tabEmojiString = [
   "fas fa-angry",
@@ -153,4 +152,12 @@ const tabEmoji = [
   "💘",
   "💜"
 ];
-export { shake, reducedFilter, sleep, tabEmoji , createValue, createValuePlayer, resetValuePlayer};
+export {
+  shake,
+  reducedFilter,
+  sleep,
+  tabEmoji,
+  createValue,
+  createValuePlayer,
+  resetValuePlayer
+};
