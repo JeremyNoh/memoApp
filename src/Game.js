@@ -232,9 +232,14 @@ class Game extends Component {
       );
     } else {
       return (
-        <Text marginTop={minorScale(3)}>
-          Augmente le level pour debuter la partie
-        </Text>
+        <>
+          <Text marginTop={minorScale(3)}>
+            Augmente le level pour debuter la partie
+          </Text>
+          <Button onClick={() => this.recupValue()}>
+            Recuperé ma derniere Partie
+          </Button>
+        </>
       );
     }
   };
@@ -313,6 +318,51 @@ class Game extends Component {
     this.setState({ memories, player });
   };
 
+  saveData = () => {
+    let { player, memories } = this.state;
+    localStorage.setItem("player", JSON.stringify(player));
+    localStorage.setItem("memories", JSON.stringify(memories));
+    toaster.success("Tes données sont enregistrées ", {
+      duration: 5
+    });
+  };
+
+  recupValue = () => {
+    let { player, memories } = this.state;
+    let playerTry = this.recupData();
+    if (playerTry === null) {
+      toaster.success("Tu n'as pas de derniere partie ", {
+        duration: 5
+      });
+    } else {
+      player = playerTry;
+      memories = this.recupDataMemo();
+    }
+    this.setState({ player, memories });
+  };
+
+  recupData = () => {
+    let { player, memories } = this.state;
+    player = JSON.parse(localStorage.getItem("player"));
+    return player;
+  };
+
+  recupDataMemo = () => {
+    let { memories } = this.state;
+    memories = JSON.parse(localStorage.getItem("memories"));
+    return memories;
+  };
+
+  DeleteData = async () => {
+    localStorage.clear();
+    toaster.notify("Donnée Supprimé ", {
+      duration: 2,
+      description: "Tu vas être redirigé , Patience !!"
+    });
+    await sleep(2000);
+    window.location.reload();
+  };
+
   render() {
     let { player } = this.state;
     return (
@@ -341,13 +391,32 @@ class Game extends Component {
             <Button
               onClick={() => this.resetMemo()}
               appearance="primary"
-              intent="danger"
+              intent="warning"
             >
-              Reset
+              Retry
             </Button>
           )}
         </Pane>
         {this.canvas()}
+        {player.lvlPlayer > 0 && (
+          <Pane>
+            <Button
+              appearance="primary"
+              onClick={() => this.saveData()}
+              disabled={!player.finishLvl}
+            >
+              Sauvegarder mes Données
+            </Button>
+            <Button
+              appearance="primary"
+              intent="danger"
+              onClick={() => this.DeleteData()}
+              disabled={!player.finishLvl}
+            >
+              Supprimer mon compte / Reset
+            </Button>
+          </Pane>
+        )}
       </>
     );
   }
