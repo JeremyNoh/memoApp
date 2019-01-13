@@ -329,7 +329,7 @@ class Game extends Component {
 
   recupValue = () => {
     let { player, memories } = this.state;
-    let playerTry = this.recupData();
+    let playerTry = this.recupDataPlayer();
     if (playerTry === null) {
       toaster.success("Tu n'as pas de derniere partie ", {
         duration: 5
@@ -338,10 +338,12 @@ class Game extends Component {
       player = playerTry;
       memories = this.recupDataMemo();
     }
-    this.setState({ player, memories });
+    this.setState({ player, memories }, () => {
+      this.resetMemo();
+    });
   };
 
-  recupData = () => {
+  recupDataPlayer = () => {
     let { player, memories } = this.state;
     player = JSON.parse(localStorage.getItem("player"));
     return player;
