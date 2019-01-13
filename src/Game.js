@@ -75,6 +75,9 @@ class Game extends Component {
       memo.try = false;
     }
 
+    // enregistre les données  dans le localStorage
+    this.saveData();
+
     this.setState({ memories, player });
   };
 
@@ -322,9 +325,6 @@ class Game extends Component {
     let { player, memories } = this.state;
     localStorage.setItem("player", JSON.stringify(player));
     localStorage.setItem("memories", JSON.stringify(memories));
-    toaster.success("Tes données sont enregistrées ", {
-      duration: 5
-    });
   };
 
   recupValue = () => {
@@ -398,25 +398,6 @@ class Game extends Component {
           )}
         </Pane>
         {this.canvas()}
-        {player.lvlPlayer > 0 && (
-          <Pane>
-            <Button
-              appearance="primary"
-              onClick={() => this.saveData()}
-              disabled={!player.finishLvl}
-            >
-              Sauvegarder mes Données
-            </Button>
-            <Button
-              appearance="primary"
-              intent="danger"
-              onClick={() => this.DeleteData()}
-              disabled={!player.finishLvl}
-            >
-              Supprimer mon compte / Reset
-            </Button>
-          </Pane>
-        )}
       </>
     );
   }
